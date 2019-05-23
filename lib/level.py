@@ -14,10 +14,7 @@ zero_offset = 282
 # default 60
 kPa = 60
 
-# purge pump time (seconds)
-purge_for = 1
-
-def get():
+def get(purge_for = 1):
     """ Take a reading(in mm) from the Level Sensor """
 
     # turn on the pump for x seconds to purge the pipe
