@@ -23,6 +23,8 @@ if diff > defaults.level_threshhold:
         'battery': battery.level(),
         'charging': battery.charging()
     })
+
+    net.disconnect()
             # - reading value
             # - battery level
             # - battery charging status

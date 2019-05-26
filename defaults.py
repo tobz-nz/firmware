@@ -8,8 +8,9 @@ level_threshhold = 5
 # LTE
 lte_apn = 'm2m'
 
+# Spark band settings
 # https://support.m2mone.co.nz/portal/kb/articles/spark-operating-frequencies
-lte_band = 3
+lte_band = 28  ## 700MHz (not 1800MHz)
 
 # WIFI
 wlan_ssid = 'Monkeys'
