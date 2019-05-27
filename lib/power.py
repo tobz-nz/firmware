@@ -1,10 +1,13 @@
 
 def level():
+    battery = BatteryLevel("P16", 3.3)
     return battery.get_level()
 
 
-def charging():
+def is_charging():
     return True
+
+
 
 """
 https://github.com/MoeweX/micropython-lib/blob/master/battery_level.py
@@ -41,6 +44,3 @@ class BatteryLevel:
         level = voltage / 1000
         print("Voltage level is {}V".format(level))
         return level
-
-
-battery = BatteryLevel("P16", 2.0)
