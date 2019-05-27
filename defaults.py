@@ -18,4 +18,5 @@ wlan_pass = 'conspire-la-skeet-roust'
 
 # System
 uid = hexlify(unique_id()).decode()
-sleep_for = 300
+sleep_for = 300 * 1000  # time to deep sleep for in milliseconds
+base_url = 'https://app.tankful.nz/api'

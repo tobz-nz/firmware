@@ -1,4 +1,5 @@
-import defaults, level
+import defaults, level, tankful
+from machine import deepsleep
 
 # load last reading
 last_level = level.last()
@@ -6,28 +7,26 @@ last_level = level.last()
 # Take a new reading
 current_level = level.get()
 
+print('Levels: {previous} / {current}'.format(previous=last_level, current=current_level))
+
 # check if reading needs to be be sent to server
 diff = abs(last_level - current_level)
 if diff > defaults.level_threshhold:
     # yes it does
-    import net, battery
+    import net, power
 
     # connect to network
-    net.connect()
-    # failed
-        # log error
-        # sleep
-    # send data
-    net.post({
-        'level': current_level,
-        'battery': battery.level(),
-        'charging': battery.charging()
-    })
+    if net.connect():
+        # send data
+        tankful.post({
+            'level': current_level,
+            'battery': power.level(),
+            'charging': power.is_charging()
+        })
+        # - reading value
+        # - battery level
+        # - battery charging status
 
-    net.disconnect()
-            # - reading value
-            # - battery level
-            # - battery charging status
             # - crital logs
             # - other logs if in debug mode
             # - previously failed readings
@@ -37,6 +36,19 @@ if diff > defaults.level_threshhold:
                     # run update process
             # error
                 # store reading as unsent - to attempt send again next time
+
+        net.disconnect()
+    else:
+        print('Failed to connect to network')
+        print('Storing level and will attempt to send again later')
+
             # store as last reading
     # no it doesn't
         # sleep
+elif tankful.should_ping():
+    net.connect()
+    tankful.ping()
+    net.disconnect()
+
+print('Sleeping for %s' % defaults.sleep_for)
+# deepsleep(defaults.sleep_for)
