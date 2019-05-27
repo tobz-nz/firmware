@@ -3,7 +3,7 @@ from http import MicroWebCli as HTTP
 
 
 def register():
-    request = HTTP('%s/devices/%s/token' % (base_url, defaults.uid))
+    request = HTTP('%s/devices/%s/token' % (defaults.base_url, defaults.uid))
     request.OpenRequest(contentType='application/json')
     response = request.GetResponse()
     print(response.ReadContentAsJSON())
