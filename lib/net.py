@@ -7,13 +7,17 @@ base_url = 'https://app.tankful.nz/api'
 
 
 def connect():
+    """ Connect to network - Try LTE first then fallback to WiFi """
+
     try:
-        return lte()
+        # Attempted to connect to LTE network (CAT-M1)
+        return connect_lte()
     except Exception:
         print('LTE failed')
 
         try:
-            return wlan()
+            # Attempt to connect to WiFi
+            return connect_wlan()
         except Exception:
             print('WiFi failed')
             return False
@@ -21,17 +25,22 @@ def connect():
     return True
 
 def disconnect(connection):
+    """ Disconnect from the provided network """
+
     connection.disconnect()
 
-    # LTE needs to be disconnected as well
+    # LTE needs to be dettached as well as disconnected
     if (hasattr(connection, 'dettach')):
         connection.dettach()
+        print('Detached')
 
     print('Disconnected')
     return True
 
 
-def lte():
+def connect_lte():
+    """ Connect to LTE network """
+
     from network import LTE
 
     connection = LTE(carrier='standard')
@@ -66,7 +75,9 @@ def lte():
     return connection
 
 
-def wlan():
+def connect_wlan():
+    """ Connect to WiFi network """
+
     from network import WLAN
 
     connection = WLAN(mode=WLAN.STA, power_save=True)
@@ -81,33 +92,16 @@ def wlan():
     return connection.ifconfig()[0]
 
 
-def register():
-    request = HTTP('%s/devices/%s/token' % (base_url, defaults.uid))
-    request.OpenRequest(contentType='application/json')
-    response = request.GetResponse()
-    print(response.ReadContentAsJSON())
-
-
-def ping():
-    return HTTP.PostRequest('%s/devices/%s/ping' % (base_url, )).IsSuccess()
-
-
-def post(url, data):
-    r = HTTP.GetRequest('http://google.com').GetResponse()
-
-    print(r.text)
-    connection.disconnect()
-
-    return True
-
-
 def at(connection, cmd):
+    """ Send an AT command to the modem """
     response = connection.send_at_cmd(cmd).split('\r\n')
     for line in response:
         print(line)
 
 
 def debug(connection):
+    """ Print debug details about the modem & connect to the console """
+
     import sqnsupgrade
 
     at(connection, 'ATI1')  # Software Version
