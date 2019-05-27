@@ -1,9 +1,6 @@
 import defaults
 import machine
 import time
-from http import MicroWebCli as HTTP
-
-base_url = 'https://app.tankful.nz/api'
 
 
 def connect():

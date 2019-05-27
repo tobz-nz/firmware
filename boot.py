@@ -1,15 +1,8 @@
-# boot.py -- run on boot-up
 import os
 import time
-# import config
 import pycom
 from machine import UART
 from network import Bluetooth, WLAN
-
-try:
-    import LTE
-except Exception:
-    pass
 
 uart = UART(0, 115200)
 os.dupterm(uart)
@@ -25,6 +18,7 @@ Bluetooth().deinit()
 
 # try:
 #     # disable LTE (really slow for some reason? oh and fails anyway?)
+#     import LTE
 #     LTE().deinit()
 # except Exception:
 #     pass
