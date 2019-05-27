@@ -16,7 +16,8 @@ if diff > defaults.level_threshhold:
     import net, power
 
     # connect to network
-    if net.connect():
+    connection = net.connect()
+    if connection:
         # send data
         tankful.post({
             'level': current_level,
@@ -37,7 +38,7 @@ if diff > defaults.level_threshhold:
             # error
                 # store reading as unsent - to attempt send again next time
 
-        net.disconnect()
+        net.disconnect(connection)
     else:
         print('Failed to connect to network')
         print('Storing level and will attempt to send again later')
@@ -46,9 +47,9 @@ if diff > defaults.level_threshhold:
     # no it doesn't
         # sleep
 elif tankful.should_ping():
-    net.connect()
+    connection = net.connect()
     tankful.ping()
-    net.disconnect()
+    net.disconnect(connection)
 
 print('Sleeping for %s' % defaults.sleep_for)
 # deepsleep(defaults.sleep_for)
