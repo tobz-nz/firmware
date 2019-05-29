@@ -9,7 +9,7 @@ adc.vref(1100)
 snsr_data = adc.channel(pin='P13', attn=ADC.ATTN_11DB)
 
 # Default 225
-zero_offset = 282
+zero_offset = defaults.zero_offset
 
 # default 60
 kPa = 60
