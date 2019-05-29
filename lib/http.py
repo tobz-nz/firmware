@@ -1,6 +1,7 @@
 """
 The MIT License (MIT)
 Copyright © 2018 Jean-Christophe Bos & HC² (www.hc2.fr)
+https://github.com/jczic/MicroWebCli
 """
 
 from   struct import pack
@@ -125,9 +126,9 @@ class MicroWebCli :
 
     # ----------------------------------------------------------------------------
 
-    def JSONRequest(url, o=None, auth=None, connTimeoutSec=10, socks5Addr=None) :
+    def JSONRequest(url, method='GET', o=None, auth=None, connTimeoutSec=10, socks5Addr=None) :
         c = MicroWebCli( url,
-                         method         = ('POST' if o else 'GET'),
+                         method         = method,
                          auth           = auth,
                          connTimeoutSec = connTimeoutSec,
                          socks5Addr     = socks5Addr )
@@ -141,7 +142,7 @@ class MicroWebCli :
         r.Close()
         if r.IsLocationMoved() :
             return MicroWebCli.JSONRequest(r.LocationMovedURL(), o, auth, connTimeoutSec, socks5Addr)
-        return None
+        return r
 
     # ----------------------------------------------------------------------------
 
@@ -217,7 +218,8 @@ class MicroWebCli :
     def OpenRequest( self,
                      data           = None,
                      contentType    = None,
-                     contentLength  = None ) :
+                     contentLength  = None,
+                     accept         = None ) :
         if self._socket :
             raise Exception('Request is already opened')
         if not self.URL :
@@ -295,6 +297,10 @@ class MicroWebCli :
             self._headers['Content-Type'] = contentType
         else :
             self._headers.pop('Content-Type', None)
+        if accept :
+            self._headers['Accept'] = accept
+        else :
+            self._headers['Accept'] = 'application/json'
         if contentLength :
             self._headers['Content-Length'] = contentLength
         else :
@@ -319,7 +325,7 @@ class MicroWebCli :
         self.OpenRequest( data          = data,
                           contentType   = 'application/x-www-form-urlencoded' )
 
-    # ------------------------------------------------------------------------   
+    # ------------------------------------------------------------------------
 
     def OpenRequestJSONData(self, o=None) :
         if not 'json' in globals() :
@@ -331,7 +337,7 @@ class MicroWebCli :
         self.OpenRequest( data          = data,
                           contentType   = 'application/json' )
 
-    # ------------------------------------------------------------------------   
+    # ------------------------------------------------------------------------
 
     def RequestWriteData(self, data) :
         self._write(data)
@@ -452,7 +458,7 @@ class MicroWebCli :
     @property
     def Host(self) :
         return self._host
-    
+
     @Host.setter
     def Host(self, value) :
         self._host = MicroWebCli._unquote_plus(str(value))
