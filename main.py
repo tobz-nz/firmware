@@ -19,7 +19,7 @@ if diff > defaults.level_threshhold:
     connection = net.connect()
     if connection:
         # send data
-        tankful.post({
+        tankful.post('devices/%s/metrics' % defaults.uid, {
             'level': current_level,
             'battery': power.level(),
             'charging': power.is_charging()
