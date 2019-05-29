@@ -3,26 +3,54 @@ from http import MicroWebCli as HTTP
 
 
 def register():
-    request = HTTP('%s/devices/%s/token' % (defaults.base_url, defaults.uid))
-    request.OpenRequest(contentType='application/json')
-    response = request.GetResponse()
-    print(response.ReadContentAsJSON())
+    response = HTTP.JSONRequest(url('devices/%s/token' % defaults.uid), 'POST', { 'model': 'UltraTankv2000'})
+    if response is not None:
+        print(response.ReadContentAsJSON())
+        print(response.ReadContent())
+        print(response.GetHeaders())
+        print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
+
+        responseData = response.ReadContentAsJSON()
+        if response.IsSuccess() and responseData is not None:
+            # get API token and save to disk for easy access
+            file = open('/flash/API', 'w')
+            file.write('token = %s' % responseData.data.api_token)
+            file.close()
+
+            return True
+
+        print(responseData)
+        return False
+    else:
+        print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
+
 
 
 def ping():
-    return HTTP.POSTRequest('%s/devices/%s/ping' % (
-        defaults.base_url,
-        defaults.uid
-    )).IsSuccess()
+    response = HTTP.JSONRequest(url('devices/%s/ping' % defaults.uid), o={})
+    if response is not None:
+        return response.IsSuccess()
+    else:
+        print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
+
+    return False
 
 
-def post(url, data):
-    r = HTTP.GETRequest('http://google.com').GetResponse()
+def post(uri, data):
+    r = HTTP.GETRequest(url(uri)).GetResponse()
 
-    print(r.text)
+    print(r.ReadContentAsJSON)
 
     return True
 
 
 def should_ping():
     return False
+
+
+def url(uri):
+    import re
+    uri = '/' + re.match(r'^\/?(.+)', uri).group(1)
+
+    print('Url: %s' % defaults.base_url + uri)
+    return defaults.base_url + uri
