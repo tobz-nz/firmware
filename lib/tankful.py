@@ -2,46 +2,73 @@ import defaults
 from http import MicroWebCli as HTTP
 
 
+def GetToken():
+    if not 'API' in globals() :
+        try:
+            import API
+
+            if API.token is not None:
+                return API.token
+        except:
+            pass
+
+    return None
+
 def register():
-    response = HTTP.JSONRequest(url('devices/%s/token' % defaults.uid), 'POST', { 'model': 'UltraTankv2000'})
-    if response is not None:
+    if not 'API' in globals() :
+        try:
+            import API
+
+            if API.token is not None:
+                return True
+        except:
+            pass
+
+    response = HTTP.JSONRequest(url('devices/%s/token' % defaults.uid), 'POST', { 'model': defaults.device_model })
+    if type(response) is dict:
+        print(response)
+
+        file = open('/flash/API.py', 'w')
+        file.write('token = \'%s\'' % response['api_token'])
+        file.close()
+
+        import API
+        API.token = response['api_token']
+
+        return True
+
+    elif response is not None:
+        print(response)
         print(response.ReadContentAsJSON())
         print(response.ReadContent())
         print(response.GetHeaders())
         print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
 
-        responseData = response.ReadContentAsJSON()
-        if response.IsSuccess() and responseData is not None:
-            # get API token and save to disk for easy access
-            file = open('/flash/API', 'w')
-            file.write('token = %s' % responseData.data.api_token)
-            file.close()
-
-            return True
-
-        print(responseData)
         return False
     else:
-        print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
+        print('Empty Response')
 
 
 
 def ping():
-    response = HTTP.JSONRequest(url('devices/%s/ping' % defaults.uid), o={})
+    token = GetToken()
+    response = HTTP.JSONRequest(url('devices/%s/ping' % defaults.uid), 'POST', auth=HTTP.AuthToken(token))
+
+    print(response)
+
     if response is not None:
-        return response.IsSuccess()
-    else:
-        print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
+        return response['statusCode'] >= 200 and response['statusCode'] < 300
 
     return False
 
 
 def post(uri, data):
-    r = HTTP.GETRequest(url(uri)).GetResponse()
+    token = GetToken()
+    response = HTTP.JSONRequest(url('devices/%s/metrics' % defaults.uid), 'POST', data, auth=HTTP.AuthToken(token))
 
-    print(r.ReadContentAsJSON)
+    print(response)
 
-    return True
+    return response
 
 
 def should_ping():
