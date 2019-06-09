@@ -718,14 +718,19 @@ class MicroWebCli :
         # ------------------------------------------------------------------------
 
         def ReadContentAsJSON(self) :
-            cnt = self.ReadContent()
-            if cnt :
+            content = self.ReadContent()
+            if content :
                 if not 'json' in globals() :
                     import json
+                if not 're' in globals() :
+                    import re
                 try :
-                    return json.loads(cnt)
+                    # convert bytes to string then strip an line breaks and
+                    # weird characters, so we should just have valid JSON
+                    contentString = re.search(r'^.*(\{.+\}).*$', content.decode('utf-8')).group(1)
+                    return json.loads(contentString)
                 except :
-                    raise Exception('Error to parse JSON response : %s' % cnt)
+                    raise Exception('Error to parse JSON response : %s' % content)
             return None
 
         # ------------------------------------------------------------------------
@@ -783,4 +788,3 @@ class MicroWebCli :
     # ============================================================================
     # ============================================================================
     # ============================================================================
-
