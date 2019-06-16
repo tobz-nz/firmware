@@ -136,15 +136,16 @@ class MicroWebCli :
             c.OpenRequestJSONData(o)
         else :
             c.OpenRequest()
+
         r = c.GetResponse()
+
         if r.IsSuccess() :
-            return {
-                'data': r.ReadContentAsJSON(), 
-                'statusCode': r.GetStatusCode()
-            }
+            r
+
         r.Close()
         if r.IsLocationMoved() :
             return MicroWebCli.JSONRequest(r.LocationMovedURL(), o, auth, connTimeoutSec, socks5Addr)
+
         return r
 
     # ----------------------------------------------------------------------------

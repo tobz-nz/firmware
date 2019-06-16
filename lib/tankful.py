@@ -25,17 +25,20 @@ def register():
             pass
 
     response = HTTP.JSONRequest(url('devices/%s/token' % defaults.uid), 'POST', { 'model': defaults.device_model })
-    if type(response) is dict:
+
+    if type(response) is HTTP._response:
         print(response)
 
+        token = response.ReadContentAsJSON()['api_token']
+
         file = open('/flash/API.py', 'w')
-        file.write('token = \'%s\'' % response['api_token'])
+        file.write('token = \'%s\'' % token)
         file.close()
 
         import API
-        API.token = response['api_token']
+        API.token = token
 
-        return True
+        return True, response
 
     elif response is not None:
         print(response)
@@ -44,9 +47,10 @@ def register():
         print(response.GetHeaders())
         print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
 
-        return False
+        return False, response
     else:
         print('Empty Response')
+        return False
 
 
 
@@ -54,19 +58,15 @@ def ping():
     token = GetToken()
     response = HTTP.JSONRequest(url('devices/%s/ping' % defaults.uid), 'POST', auth=HTTP.AuthToken(token))
 
-    print(response)
-
     if response is not None:
-        return response['statusCode'] >= 200 and response['statusCode'] < 300
+        return response.GetStatusCode() >= 200 and response.GetStatusCode() < 300, response
 
-    return False
+    return False, response
 
 
 def post(uri, data):
     token = GetToken()
     response = HTTP.JSONRequest(url('devices/%s/metrics' % defaults.uid), 'POST', data, auth=HTTP.AuthToken(token))
-
-    print(response)
 
     return response
 

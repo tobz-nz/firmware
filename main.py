@@ -26,19 +26,16 @@ try:
                 'battery': power.level(),
                 'charging': power.is_charging()
             })
-            # - reading value
-            # - battery level
-            # - battery charging status
 
-                # - crital logs
-                # - other logs if in debug mode
-                # - previously failed readings
-                # success
-                    # clear previsouly failed readings that succeeded this time
-                    # check if response has new update header/data
-                        # run update process
-                # error
-                    # store reading as unsent - to attempt send again next time
+            # - crital logs
+            # - other logs if in debug mode
+            # - previously failed readings
+            # success
+                # clear previsouly failed readings that succeeded this time
+                # check if response has new update header/data
+                    # run update process
+            # error
+                # store reading as unsent - to attempt send again next time
 
             net.disconnect(connection)
         else:
@@ -49,8 +46,12 @@ try:
         # no it doesn't
             # sleep
     elif tankful.should_ping():
+        import net
         connection = net.connect()
-        tankful.ping()
+
+        # send heartbeat
+        response = tankful.ping()
+
         net.disconnect(connection)
 
 except Exception as err:
@@ -58,6 +59,7 @@ except Exception as err:
     print(err.args[0])
     file = open('/flash/error.log', 'a')
     file.write(err.args[0])
+    file.write("\n")
     file.close()
 
 finally:

@@ -17,9 +17,9 @@ def connect():
             return connect_wlan()
         except Exception:
             print('WiFi failed')
-            return False
+            pass
 
-    return True
+    return False
 
 def disconnect(connection):
     """ Disconnect from the provided network """
