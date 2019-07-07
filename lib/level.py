@@ -8,9 +8,6 @@ adc = ADC()
 adc.vref(1100)
 snsr_data = adc.channel(pin='P13', attn=ADC.ATTN_11DB)
 
-# Default 225
-zero_offset = defaults.zero_offset
-
 # default 60
 kPa = 60
 
@@ -30,7 +27,7 @@ def get(purge_for = 1):
     # this is to metigate the ESP32's noisy ADC
     reading = []
     for i in range(100):
-        pkReading = ((snsr_data.voltage() - zero_offset) / kPa)
+        pkReading = ((snsr_data.voltage() - defaults.zero_offset) / kPa)
         mm = pkReading * 100
         reading.append(mm)
 
