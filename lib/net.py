@@ -8,12 +8,14 @@ def connect():
 
     try:
         # Attempted to connect to LTE network (CAT-M1)
+        print('Connecting to LTE...')
         return connect_lte()
     except Exception:
         print('LTE failed')
 
         try:
             # Attempt to connect to WiFi
+            print('Connecting to WiFi...')
             return connect_wlan()
         except Exception:
             print('WiFi failed')

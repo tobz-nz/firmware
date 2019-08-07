@@ -700,7 +700,8 @@ class MicroWebCli :
             except MemoryError as memEx :
                 self.Close()
                 raise MemoryError('Error to read response content (%s)' % memEx)
-            except :
+            except Exception as ex:
+                print('Error reading content')
                 self.Close()
             return None
 

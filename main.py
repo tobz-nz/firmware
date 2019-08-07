@@ -1,4 +1,4 @@
-import defaults, level, tankful
+import defaults, level, tankful, net
 from machine import deepsleep
 
 try:
@@ -15,17 +15,22 @@ try:
     diff = abs(last_level - current_level)
     if diff > defaults.level_threshhold:
         # yes it does
-        import net, power
+        import power
 
         # connect to network
         connection = net.connect()
         if connection:
             # send data
-            tankful.post('devices/%s/metrics' % defaults.uid, {
+            response, needs_update = tankful.post('devices/%s/metrics' % defaults.uid, {
                 'level': current_level,
                 'battery': power.level(),
                 'charging': power.is_charging()
             })
+
+            # check if firmware needs updating
+            if (needs_update is True):
+                from OTA import OTA
+                OTA.update()
 
             # - crital logs
             # - other logs if in debug mode
@@ -42,15 +47,16 @@ try:
             print('Failed to connect to network')
             print('Storing level and will attempt to send again later')
 
-                # store as last reading
-        # no it doesn't
-            # sleep
     elif tankful.should_ping():
-        import net
         connection = net.connect()
 
         # send heartbeat
         response = tankful.ping()
+
+        # check if firmware needs updating
+        if (tankful.check_for_update(response) is True):
+            from OTA import OTA
+            OTA.update()
 
         net.disconnect(connection)
 
