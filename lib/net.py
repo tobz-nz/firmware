@@ -6,22 +6,11 @@ import time
 def connect():
     """ Connect to network - Try LTE first then fallback to WiFi """
 
-    try:
-        # Attempted to connect to LTE network (CAT-M1)
-        print('Connecting to LTE...')
+    if (defaults.prefered_network is 'lte'):
         return connect_lte()
-    except Exception:
-        print('LTE failed')
+    else:
+        return connect_wlan()
 
-        try:
-            # Attempt to connect to WiFi
-            print('Connecting to WiFi...')
-            return connect_wlan()
-        except Exception:
-            print('WiFi failed')
-            pass
-
-    return False
 
 def disconnect(connection):
     """ Disconnect from the provided network """
@@ -44,6 +33,7 @@ def connect_lte():
 
     connection = LTE(carrier='standard')
 
+    print('Connecting to LTE...')
     print('attaching ', end='')
     i = 0
     connection.attach(band=defaults.lte_band, apn=defaults.lte_apn)
@@ -71,7 +61,7 @@ def connect_lte():
     print('')
     print('Connected')
 
-    return connection
+    return connection, connection.ifconfig()[0]
 
 
 def connect_wlan():
@@ -79,6 +69,7 @@ def connect_wlan():
 
     from network import WLAN
 
+    print('Connecting to WiFi...')
     connection = WLAN(mode=WLAN.STA, power_save=True)
     connection.connect(defaults.wlan_ssid, auth=(
         WLAN.WPA2,
@@ -88,7 +79,7 @@ def connect_wlan():
     while not connection.isconnected():
         machine.idle()  # save power while waiting
 
-    return connection.ifconfig()[0]
+    return connection, connection.ifconfig()[0]
 
 
 def at(connection, cmd):

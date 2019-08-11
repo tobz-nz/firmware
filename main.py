@@ -19,7 +19,7 @@ try:
         import power
 
         # connect to network
-        connection = net.connect()
+        connection, ip = net.connect()
         if connection:
             # send data
             response, needs_update = tankful.post('devices/%s/metrics' % defaults.uid, {
@@ -49,7 +49,7 @@ try:
             print('Storing level and will attempt to send again later')
 
     elif tankful.should_ping():
-        connection = net.connect()
+        connection, ip = net.connect()
 
         # send heartbeat
         response = tankful.ping()
