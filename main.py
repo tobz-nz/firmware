@@ -6,7 +6,8 @@ try:
     # load last reading
     last_level = level.last()
 
-    # Take a new reading
+    # Take a new reading (run pump for x seconds first)
+    level.purge(0.5)
     current_level = level.get()
 
     print('Levels: {previous} / {current}'.format(previous=last_level, current=current_level))
