@@ -7,15 +7,20 @@ level_threshhold = 5
 zero_offset = 292
 
 # LTE
-lte_apn = 'm2m'
+# lte_apn = 'm2m' # Spark
+lte_apn = 'hologram' #Hologram
 
 # Spark band settings
 # https://support.m2mone.co.nz/portal/kb/articles/spark-operating-frequencies
-lte_band = 28  ## 700MHz (not 1800MHz)
+# lte_band = 28  ## 700MHz (Spark)
+
+lte_band = 3  ## 1800MHz (Hologram/Vodafone)
 
 # WIFI
 wlan_ssid = 'Monkeys'
 wlan_pass = 'conspire-la-skeet-roust'
+
+prefered_network = 'wifi'
 
 # System
 uid = hexlify(unique_id()).decode()
