@@ -64,7 +64,14 @@ def register():
 
 
 def ping():
+    """ Ping the server telling it 'I'm still alive' """
+
     token = GetToken()
+    print('API Token: {}'.format(token))
+    if (token is None):
+        print('No API Token!')
+        return False, None
+
     response = HTTP.JSONRequest(url('devices/%s/ping' % defaults.uid), 'POST', auth=HTTP.AuthToken(token))
 
     if response is not None:
@@ -74,7 +81,14 @@ def ping():
 
 
 def post(uri, data):
+    """ Post new Metric data to server """
+
     token = GetToken()
+    print('API Token: {}'.format(token))
+    if (token is None):
+        print('No API Token!')
+        return None, False
+
     response = HTTP.JSONRequest(url('devices/%s/metrics' % defaults.uid), 'POST', data, auth=HTTP.AuthToken(token))
 
     return response, check_for_update(response)

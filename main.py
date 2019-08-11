@@ -52,7 +52,7 @@ try:
         connection, ip = net.connect()
 
         # send heartbeat
-        response = tankful.ping()
+        successful, response = tankful.ping()
 
         # check if firmware needs updating
         if (tankful.check_for_update(response) is True):
