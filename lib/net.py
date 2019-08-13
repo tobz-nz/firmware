@@ -61,7 +61,7 @@ def connect_lte():
     print('')
     print('Connected')
 
-    return connection, connection.ifconfig()[0]
+    return connection, None
 
 
 def connect_wlan():
