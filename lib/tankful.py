@@ -1,6 +1,7 @@
 import defaults
-from http import MicroWebCli as HTTP
-
+import json
+# https://github.com/lucien2k/wipy-urllib
+import urequests as requests
 
 def GetToken():
     if not 'API' in globals() :
@@ -18,49 +19,37 @@ def register():
     if not 'API' in globals() :
         try:
             import API
-
-            if API.token is not None:
+            if hasattr(API, 'token'):
                 return True
         except:
             pass
 
-    response = HTTP.JSONRequest(url('devices/%s/token' % defaults.uid), 'POST', { 'model': defaults.device_model })
+    response = requests.post(
+        url('devices/%s/token' % defaults.uid),
+        data={ 'model': defaults.device_model },
+        headers={'Accept':'application/json'}
+    )
 
-    if type(response) is HTTP._response:
-        print(response)
-        print(response.GetStatusCode())
-        print(response.GetContentType())
-        print(response.GetContentLength())
-        print(response.GetHeaders())
-        print(response.ReadContent())
-        print(response.ReadContentAsJSON())
+    if response is not None and response.status_code < 300:
+        content = json.loads(response.read())
+        token = content['api_token']
 
-        responseBody = response.ReadContentAsJSON()
-        if responseBody is not None:
-            token = response.ReadContentAsJSON()['api_token']
+        file = open('/flash/API.py', 'w')
+        file.write('token = "{}"'.format(token))
+        file.close()
 
-            file = open('/flash/API.py', 'w')
-            file.write('token = {}'.format(token))
-            file.close()
+        import API
+        API.token = token
+        print('Token: {}'.format(API.token))
 
-            import API
-            API.token = token
-            print('Token: {}'.format(API.token))
-
-        return (responseBody is not None), response, check_for_update(response)
-
+        return True, response, check_for_update(response)
     elif response is not None:
-        print(response)
-        print(response.ReadContentAsJSON())
-        print(response.ReadContent())
-        print(response.GetHeaders())
-        print('(%s) %s' % (response.GetStatusCode(), response.GetStatusMessage()))
-
-        return False, response, check_for_update(response)
+        print(response.status_code)
+        print(response.read())
     else:
         print('Empty Response')
-        return False
 
+    return False, None, False
 
 
 def ping():
@@ -72,10 +61,14 @@ def ping():
         print('No API Token!')
         return False, None
 
-    response = HTTP.JSONRequest(url('devices/%s/ping' % defaults.uid), 'POST', auth=HTTP.AuthToken(token))
+    response = requests.post(
+        url('devices/%s/ping' % defaults.uid),
+        headers={'Accept':'application/json'},
+        auth=token
+    )
 
     if response is not None:
-        return response.GetStatusCode() >= 200 and response.GetStatusCode() < 300, response, check_for_update(response)
+        return response.status_code >= 200 and response.status_code < 300, response, check_for_update(response)
 
     return False, response
 
@@ -89,7 +82,15 @@ def post(uri, data):
         print('No API Token!')
         return None, False
 
-    response = HTTP.JSONRequest(url('devices/%s/metrics' % defaults.uid), 'POST', data, auth=HTTP.AuthToken(token))
+    response = requests.post(
+        url('devices/%s/metrics' % defaults.uid),
+        data = data,
+        headers={'Accept':'application/json'},
+        auth=token
+    )
+
+    print(response.status_code)
+    print(response.text)
 
     return response, check_for_update(response)
 
@@ -128,8 +129,8 @@ def url(uri):
 
 def check_for_update(response):
     from OTA_VERSION import VERSION
-    if ('X-Current-Firmware' in response.GetHeaders()):
-        version = response.GetHeaders()['X-Current-Firmware']
+    if ('X-Current-Firmware' in response.headers):
+        version = response.headers['X-Current-Firmware']
         return VERSION < version, version, VERSION
 
     return False

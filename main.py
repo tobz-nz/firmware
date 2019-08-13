@@ -21,9 +21,11 @@ try:
         # connect to network
         connection, ip = net.connect()
         if connection:
+            tankful.register()
+
             # send data
             response, needs_update = tankful.post('devices/%s/metrics' % defaults.uid, {
-                'level': current_level,
+                'value': current_level,
                 'battery': power.level(),
                 'charging': power.is_charging()
             })
