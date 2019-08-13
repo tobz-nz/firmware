@@ -64,6 +64,11 @@ try:
         net.disconnect(connection)
 
 except Exception as err:
+    try:
+        net.disconnect(connection)
+    except:
+        pass
+
     # log error
     print(err.args[0])
     file = open('/flash/error.log', 'a')
