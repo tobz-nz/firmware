@@ -73,4 +73,4 @@ except Exception as err:
 
 finally:
     print('Sleeping for %s' % defaults.sleep_for)
-    # deepsleep(defaults.sleep_for)
+    deepsleep(defaults.sleep_for)
