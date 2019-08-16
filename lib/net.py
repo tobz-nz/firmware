@@ -3,10 +3,12 @@ import machine
 import time
 
 
-def connect():
+def connect(type = None):
     """ Connect to network - Try LTE first then fallback to WiFi """
 
-    if (defaults.prefered_network is 'lte'):
+    conectTo = type or defaults.prefered_network
+
+    if (conectTo is 'lte'):
         return connect_lte()
     else:
         return connect_wlan()

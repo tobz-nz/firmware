@@ -20,7 +20,7 @@ lte_band = 3  ## 1800MHz (Hologram/Vodafone)
 wlan_ssid = 'Monkeys'
 wlan_pass = 'conspire-la-skeet-roust'
 
-prefered_network = 'wifi'
+prefered_network = 'lte'
 
 # System
 uid = hexlify(unique_id()).decode()
