@@ -123,10 +123,19 @@ class OTA():
                 dest_path = "{}".format(f['dest_path'])
 
                 # make sure desitnation path is free first
-                self.delete_file(dest_path)
+                try:
+                    self.delete_file(dest_path)
+                except:
+                    # probably doesn't exist
+                    print('Faied to delete {}'.format(dest_path))
+                    pass
 
                 # rename
-                os.rename(new_path, dest_path)
+                try:
+                    os.rename(new_path, dest_path)
+                    print('{}'.format(dest_path))
+                except:
+                    print('Failed to rename {} to {}'.format(new_path, dest_path))
 
         else:
             print('invalid manifest')
@@ -137,6 +146,7 @@ class OTA():
             # This actually makes a backup of the files incase we need to roll back
             for f in manifest['delete']:
                 self.delete_file(f)
+                print('{} deleted'.format(f))
 
         # Flash firmware
         if "firmware" in manifest:
@@ -187,7 +197,10 @@ class OTA():
             pass  # There isnt a previous backup
 
         # Backup current file
-        os.rename(dest_path, bak_path)
+        try:
+            os.rename(dest_path, bak_path)
+        except:
+            pass
 
     def delete_file(self, f):
         bak_path = "/{}.bak_del".format(f)
@@ -200,7 +213,10 @@ class OTA():
             pass  # There isnt a previous delete backup
 
         # Backup current file
-        os.rename(dest_path, bak_path)
+        try:
+            os.rename(dest_path, bak_path)
+        except:
+            pass
 
     def write_firmware(self, f):
         hash = self.get_data(f['URL'].split("/", 3)[-1])
