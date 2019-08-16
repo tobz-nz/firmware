@@ -128,9 +128,15 @@ def url(uri):
 
 
 def check_for_update(response):
-    from OTA_VERSION import VERSION
+    try:
+        from OTA_VERSION import VERSION
+    except:
+        VERSION = '0.0.0'
+
     if ('X-Current-Firmware' in response.headers):
         version = response.headers['X-Current-Firmware']
-        return VERSION < version, version, VERSION
+        print('current version: {}'.format(version))
+        print('installed version: {}'.format(VERSION))
+        return version > VERSION, version, VERSION
 
     return False

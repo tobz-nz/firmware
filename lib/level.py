@@ -59,5 +59,8 @@ def put(last_level):
 def last():
     """ Get the previous level reading """
     output = {}
-    execfile(defaults.last_level_file, None, output)
-    return output['value']
+    try:
+        execfile(defaults.last_level_file, None, output)
+        return output['value']
+    except:
+        return 0
