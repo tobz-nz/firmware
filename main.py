@@ -45,7 +45,6 @@ try:
             # error
                 # store reading as unsent - to attempt send again next time
 
-            net.disconnect(connection)
         else:
             print('Failed to connect to network')
             print('Storing level and will attempt to send again later')
@@ -64,7 +63,7 @@ try:
 
 except Exception as err:
     try:
-        net.disconnect(connection)
+        print(err)
     except:
         pass
 
@@ -76,5 +75,11 @@ except Exception as err:
     file.close()
 
 finally:
+    try:
+        # disconnect from network
+        net.disconnect(connection)
+    except:
+        pass
+
     print('Sleeping for %s' % config.sleep_for)
     deepsleep(config.sleep_for)
