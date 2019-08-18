@@ -135,8 +135,8 @@ def check_for_update(response):
 
     if ('X-Current-Firmware' in response.headers):
         version = response.headers['X-Current-Firmware']
-        print('current version: {}'.format(version))
-        print('installed version: {}'.format(VERSION))
+        print('current version: {}'.format(VERSION))
+        print('latest version: {}'.format(version))
         return version > VERSION, version, VERSION
 
     return False
