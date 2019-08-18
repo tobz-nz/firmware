@@ -14,6 +14,7 @@ import ubinascii
 import gc
 import os
 import machine
+import time
 
 import config
 import tankful
@@ -163,8 +164,8 @@ class OTA():
 
         from OTA_VERSION import VERSION
 
-        print('Firmware now at version {}'.format(manifest['version']))
         print('Restarting...')
+        time.sleep(0.1)
 
         # Reboot the device to run the new decode
         machine.reset()
