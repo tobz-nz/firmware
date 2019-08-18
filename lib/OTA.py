@@ -153,7 +153,7 @@ class OTA():
 
         from OTA_VERSION import VERSION
 
-        print('Firmware now at version {}'.format(VERSION))
+        print('Firmware now at version {}'.format(manifest['firmware']))
         print('Restarting...')
 
         # Reboot the device to run the new decode
