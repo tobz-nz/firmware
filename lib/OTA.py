@@ -151,6 +151,15 @@ class OTA():
         if "firmware" in manifest:
             self.write_firmware(manifest['firmware'])
 
+        # Save version number file
+        try:
+            self.backup_file({"dest_path": "/flash/OTA_VERSION.py"})
+        except OSError:
+            pass  # There isnt a previous file to backup
+
+        with open("/flash/OTA_VERSION.py", 'w') as fp:
+            fp.write("VERSION = '{}'".format(manifest['version']))
+
         from OTA_VERSION import VERSION
 
         print('Firmware now at version {}'.format(manifest['firmware']))
