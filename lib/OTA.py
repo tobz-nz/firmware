@@ -159,10 +159,11 @@ class OTA():
 
         with open("/flash/OTA_VERSION.py", 'w') as fp:
             fp.write("VERSION = '{}'".format(manifest['version']))
+            print('new version: {}'.format(manifest['version']))
 
         from OTA_VERSION import VERSION
 
-        print('Firmware now at version {}'.format(manifest['firmware']))
+        print('Firmware now at version {}'.format(manifest['version']))
         print('Restarting...')
 
         # Reboot the device to run the new decode
