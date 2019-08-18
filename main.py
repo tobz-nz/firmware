@@ -53,10 +53,10 @@ try:
         connection, ip = net.connect()
 
         # send heartbeat
-        successful, response = tankful.ping()
+        successful, response, needsUpdate = tankful.ping()
 
         # check if firmware needs updating
-        if (tankful.check_for_update(response)[0] is True):
+        if (needsUpdate[0] is True):
             from OTA import OTA
             updater = OTA()
             updater.update()

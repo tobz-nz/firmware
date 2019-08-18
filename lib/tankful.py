@@ -59,7 +59,7 @@ def ping():
     print('API Token: {}'.format(token))
     if (token is None):
         print('No API Token!')
-        return False, None
+        return False, None, None
 
     response = requests.post(
         url('devices/%s/ping' % config.uid),
@@ -70,7 +70,7 @@ def ping():
     if response is not None:
         return response.status_code >= 200 and response.status_code < 300, response, check_for_update(response)
 
-    return False, response
+    return False, response, None
 
 
 def post(uri, data):
@@ -139,4 +139,4 @@ def check_for_update(response):
         print('latest version: {}'.format(version))
         return version > VERSION, version, VERSION
 
-    return False
+    return False, None, VERSION
