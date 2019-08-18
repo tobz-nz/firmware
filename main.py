@@ -1,4 +1,4 @@
-import defaults, level, tankful, net
+import config, level, tankful, net
 from machine import deepsleep
 
 try:
@@ -14,7 +14,7 @@ try:
 
     # check if reading needs to be be sent to server
     diff = abs(last_level - current_level)
-    if diff > defaults.level_threshhold:
+    if diff > config.level_threshhold:
         # yes it does
         import power
 
@@ -24,7 +24,7 @@ try:
             tankful.register()
 
             # send data
-            response, needs_update = tankful.post('devices/%s/metrics' % defaults.uid, {
+            response, needs_update = tankful.post('devices/%s/metrics' % config.uid, {
                 'value': current_level,
                 'battery': power.level(),
                 'charging': power.is_charging()
@@ -77,5 +77,5 @@ except Exception as err:
     file.close()
 
 finally:
-    print('Sleeping for %s' % defaults.sleep_for)
-    deepsleep(defaults.sleep_for)
+    print('Sleeping for %s' % config.sleep_for)
+    deepsleep(config.sleep_for)

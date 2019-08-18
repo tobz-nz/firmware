@@ -1,4 +1,4 @@
-import defaults
+import config
 import machine
 import time
 
@@ -6,7 +6,7 @@ import time
 def connect(type = None):
     """ Connect to network - Try LTE first then fallback to WiFi """
 
-    conectTo = type or defaults.prefered_network
+    conectTo = type or config.prefered_network
 
     if (conectTo is 'lte'):
         return connect_lte()
@@ -38,7 +38,7 @@ def connect_lte():
     print('Connecting to LTE...')
     print('attaching ', end='')
     i = 0
-    connection.attach(band=defaults.lte_band, apn=defaults.lte_apn)
+    connection.attach(band=config.lte_band, apn=config.lte_apn)
     while not connection.isattached():
         i = i+1
         machine.idle()  # save power while waiting
@@ -73,9 +73,9 @@ def connect_wlan():
 
     print('Connecting to WiFi...')
     connection = WLAN(mode=WLAN.STA, power_save=True)
-    connection.connect(defaults.wlan_ssid, auth=(
+    connection.connect(config.wlan_ssid, auth=(
         WLAN.WPA2,
-        defaults.wlan_pass
+        config.wlan_pass
     ))
 
     while not connection.isconnected():

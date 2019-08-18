@@ -1,4 +1,4 @@
-import defaults
+import config
 import json
 # https://github.com/lucien2k/wipy-urllib
 import urequests as requests
@@ -25,8 +25,8 @@ def register():
             pass
 
     response = requests.post(
-        url('devices/%s/token' % defaults.uid),
-        data={ 'model': defaults.device_model },
+        url('devices/%s/token' % config.uid),
+        data={ 'model': config.device_model },
         headers={'Accept':'application/json'}
     )
 
@@ -62,7 +62,7 @@ def ping():
         return False, None
 
     response = requests.post(
-        url('devices/%s/ping' % defaults.uid),
+        url('devices/%s/ping' % config.uid),
         headers={'Accept':'application/json'},
         auth=token
     )
@@ -83,7 +83,7 @@ def post(uri, data):
         return None, False
 
     response = requests.post(
-        url('devices/%s/metrics' % defaults.uid),
+        url('devices/%s/metrics' % config.uid),
         data = data,
         headers={'Accept':'application/json'},
         auth=token
@@ -107,7 +107,7 @@ def should_ping():
     print('ping: {}'.format(count))
 
     file = open('/flash/PING_COUNT.py', 'w')
-    if (count >= defaults.ping_limit):
+    if (count >= config.ping_limit):
         file.write('count = {}'.format(0))
         file.close()
 
@@ -123,8 +123,8 @@ def url(uri):
     import re
     uri = '/' + re.match(r'^\/?(.+)', uri).group(1)
 
-    print('Url: %s' % defaults.base_url + uri)
-    return defaults.base_url + uri
+    print('Url: %s' % config.base_url + uri)
+    return config.base_url + uri
 
 
 def check_for_update(response):

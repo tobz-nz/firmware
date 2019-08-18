@@ -19,7 +19,7 @@ import pycom
 import os
 import machine
 
-import defaults
+import config
 import tankful
 import urequests as requests
 
@@ -60,7 +60,7 @@ class OTA():
         import re
         uri = '/' + re.match(r'^\/?(.+)', uri).group(1)
 
-        return defaults.update_base_url + uri
+        return config.update_base_url + uri
 
     # OTA methods
 

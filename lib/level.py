@@ -1,4 +1,4 @@
-import time, math, defaults
+import time, math, config
 from machine import Pin, ADC
 
 mtr_enable = Pin('P20', mode=Pin.OUT)
@@ -31,7 +31,7 @@ def get():
     # this is to metigate the ESP32's noisy ADC
     reading = []
     for i in range(100):
-        pkReading = ((snsr_data.voltage() - defaults.zero_offset) / kPa)
+        pkReading = ((snsr_data.voltage() - config.zero_offset) / kPa)
         mm = pkReading * 100
         reading.append(mm)
 
@@ -52,7 +52,7 @@ def get():
 def put(last_level):
     """ Store the given level reading """
 
-    file = open(defaults.last_level_file, 'w')
+    file = open(config.last_level_file, 'w')
     file.write('value = %s' % last_level)
     file.close()
 
@@ -60,7 +60,7 @@ def last():
     """ Get the previous level reading """
     output = {}
     try:
-        execfile(defaults.last_level_file, None, output)
+        execfile(config.last_level_file, None, output)
         return output['value']
     except:
         return 0

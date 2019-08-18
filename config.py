@@ -17,8 +17,8 @@ lte_apn = 'hologram' #Hologram
 lte_band = 3  ## 1800MHz (Hologram/Vodafone)
 
 # WIFI
-wlan_ssid = 'Monkeys'
-wlan_pass = 'conspire-la-skeet-roust'
+wlan_ssid = ''
+wlan_pass = ''
 
 prefered_network = 'lte'
 
