@@ -8,14 +8,10 @@
 # available at https://www.pycom.io/opensource/licensing
 #
 
-import network
-import socket
-import machine
 import json
 import uhashlib
 import ubinascii
 import gc
-import pycom
 import os
 import machine
 
@@ -85,6 +81,7 @@ class OTA():
         return manifest, response
 
     def update(self):
+        print('Check for new firmware version...')
         manifest, response = self.get_update_manifest()
 
         print(manifest)
@@ -96,6 +93,8 @@ class OTA():
         if 'current_ver' in manifest:
             print(manifest['current_ver'][0])
             return response
+
+        print('Updating to version {}...'.format(manifest['version']))
 
         if 'new' in manifest and 'update' in manifest:
             # Download new files and verify hashes
@@ -133,7 +132,7 @@ class OTA():
                 # rename
                 try:
                     os.rename(new_path, dest_path)
-                    print('{}'.format(dest_path))
+                    print('Done: {}'.format(dest_path))
                 except:
                     print('Failed to rename {} to {}'.format(new_path, dest_path))
 
@@ -146,22 +145,16 @@ class OTA():
             # This actually makes a backup of the files incase we need to roll back
             for f in manifest['delete']:
                 self.delete_file(f)
-                print('{} deleted'.format(f))
+                print('Deleted: {}'.format(f))
 
         # Flash firmware
         if "firmware" in manifest:
             self.write_firmware(manifest['firmware'])
 
-        # Save version number
-        try:
-            self.backup_file({"dest_path": "/flash/OTA_VERSION.py"})
-        except OSError:
-            pass  # There isnt a previous file to backup
-
-        with open("/flash/OTA_VERSION.py", 'w') as fp:
-            fp.write("VERSION = '{}'".format(manifest['version']))
-
         from OTA_VERSION import VERSION
+
+        print('Firmware now at version {}'.format(VERSION))
+        print('Restarting...')
 
         # Reboot the device to run the new decode
         machine.reset()
