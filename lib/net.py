@@ -9,9 +9,12 @@ def connect(type = None):
     conectTo = type or config.prefered_network
 
     if (conectTo is 'lte'):
-        return connect_lte()
-    else:
-        return connect_wlan()
+        try:
+            return connect_lte()
+        except:
+            pass
+
+    return connect_wlan()
 
 
 def disconnect(connection):
