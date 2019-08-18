@@ -2,7 +2,6 @@ import config, level, tankful, net
 from machine import deepsleep
 
 try:
-
     # load last reading
     last_level = level.last()
 
@@ -31,9 +30,10 @@ try:
             })
 
             # check if firmware needs updating
-            if (needs_update is True):
+            if (needs_update[0] is True):
                 from OTA import OTA
-                OTA.update()
+                updater = OTA()
+                updater.update()
 
             # - crital logs
             # - other logs if in debug mode
@@ -57,11 +57,10 @@ try:
         successful, response = tankful.ping()
 
         # check if firmware needs updating
-        if (tankful.check_for_update(response) is True):
+        if (tankful.check_for_update(response)[0] is True):
             from OTA import OTA
-            OTA.update()
-
-        net.disconnect(connection)
+            updater = OTA()
+            updater.update()
 
 except Exception as err:
     try:

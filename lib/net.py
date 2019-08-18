@@ -48,7 +48,7 @@ def connect_lte():
         print('.', end='')
         if (i > 50):
             print('Timeout')
-            return connection
+            return None, None
     print('')
     print('Attached')
 
