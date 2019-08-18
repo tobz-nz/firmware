@@ -162,8 +162,6 @@ class OTA():
             fp.write("VERSION = '{}'".format(manifest['version']))
             print('new version: {}'.format(manifest['version']))
 
-        from OTA_VERSION import VERSION
-
         print('Restarting...')
         time.sleep(0.1)
 
