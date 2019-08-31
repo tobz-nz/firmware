@@ -12,7 +12,7 @@ try:
     # take reading
     current_level = level.get()
 
-    print('Levels: {previous} / {current}'.format(previous=last_level, current=current_level))
+    print('Levels: {previous}mm / {current}mm'.format(previous=last_level, current=current_level))
 
     # check if reading needs to be be sent to server
     diff = abs(last_level - current_level)

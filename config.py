@@ -4,7 +4,6 @@ from machine import unique_id
 # Level
 last_level_file = '/flash/last_level.py'
 level_threshhold = 5
-zero_offset = 292
 
 # LTE
 # lte_apn = 'm2m' # Spark

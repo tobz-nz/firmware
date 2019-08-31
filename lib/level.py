@@ -6,7 +6,7 @@ snsr_enable = Pin('P19', mode=Pin.OUT)
 
 adc = ADC()
 adc.vref(1100)
-snsr_data = adc.channel(pin='P13', attn=ADC.ATTN_11DB)
+sensor = adc.channel(pin='P13', attn=ADC.ATTN_11DB)
 
 # default 60
 kPa = 60
@@ -25,21 +25,38 @@ def get():
 
     # turn the sensor on and wait for it to boot up
     snsr_enable.toggle()
-    time.sleep(0.5)
+    time.sleep(1)
+
+    zero_offset = 286.00    # Minimum sensor voltage reading (millivolts). In theory should be 330.00 but 286 gives us about 0 so...
+    Vsupply = 3300.00       # Supply voltage to sensor (millivolts)
+    pmax = 5.00             # Maximum sensor operating range (psi)
+    psi_to_pa = 6894.76     # Conversion factor from psi to Pa
+    g = 9.81                # Typical gravitational acceleration @ sea level (m/s^2)
+    rho = 1000.00           # Density of water (kg/m^3)
 
     # take a bunch of readings and sum the result
     # this is to metigate the ESP32's noisy ADC
     reading = []
+    print('start reading...')
     for i in range(100):
-        pkReading = ((snsr_data.voltage() - config.zero_offset) / kPa)
-        mm = pkReading * 100
+        # Calculate water pressure in Pa
+        water_pressure = pmax * psi_to_pa * (sensor.voltage() - zero_offset) / (0.8 * Vsupply)
+
+        # Calculate water depth (mm) from pressure (kPa)
+        mm = round((1000 * water_pressure) / (rho * g))
+
+        # append this reading to our list
         reading.append(mm)
 
-        # print(pkReading)
-        time.sleep(0.01)
+        # print(water_pressure)
+        print('{}mm'.format(mm))
+
+        # wait a tick for next reading
+        time.sleep(0.02)
 
     # turn the sensor off
     snsr_enable.toggle()
+    print('end reading')
 
     rounded = math.ceil(sum(reading)/len(reading))
     reading = rounded if rounded >= 0 else 0
