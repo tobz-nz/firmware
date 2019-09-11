@@ -14,8 +14,14 @@ def connect(type = None):
         except:
             pass
 
-    return connect_wlan()
+        return connect_wlan()
+    else:
+        try:
+            return connect_wlan()
+        except:
+            pass
 
+        return connect_lte()
 
 def disconnect(connection):
     """ Disconnect from the provided network """
