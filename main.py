@@ -28,7 +28,7 @@ try:
             # send data
             response, needs_update = tankful.post('devices/%s/metrics' % config.uid, {
                 'value': current_level,
-                'battery': power.level(),
+                # 'battery': power.level(),
                 'charging': power.is_charging()
             })
 
@@ -77,6 +77,8 @@ except Exception as err:
     file.write("\n")
     file.close()
 
+    raise err
+
 finally:
     try:
         # disconnect from network
@@ -84,5 +86,5 @@ finally:
     except:
         pass
 
-    print('Sleeping for %s' % config.sleep_for)
+    print('Sleeping for %s minutes' % (config.sleep_for / 60))
     deepsleep(config.sleep_for)
