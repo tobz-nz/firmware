@@ -6,9 +6,9 @@ try:
     last_level = level.last()
 
     # Take a new reading (run pump for x seconds first)
-    level.purge(0.5)
+    level.purge(1)
     # wait for tube pressure to settle
-    time.sleep(0.5)
+    time.sleep(1)
     # take reading
     current_level = level.get()
 
