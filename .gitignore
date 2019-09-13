@@ -1,2 +1,5 @@
 /.vscode
 /OTA_VERSION.py
+/last_level.py
+/error.log
+/API.py
