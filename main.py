@@ -6,13 +6,18 @@ try:
     last_level = level.last()
 
     # Take a new reading (run pump for x seconds first)
+    print('Purging air pipe...')
     level.purge(1)
+
     # wait for tube pressure to settle
-    time.sleep(1)
+    print('Waiting for pressure to stabalize...')
+    time.sleep(2)
+
     # take reading
+    print('Taking reading...')
     current_level = level.get()
 
-    print('Levels: {previous}mm / {current}mm'.format(previous=last_level, current=current_level))
+    print('Levels: {previous}mm -> {current}mm'.format(previous=last_level, current=current_level))
 
     # check if reading needs to be be sent to server
     diff = abs(last_level - current_level)
@@ -27,9 +32,7 @@ try:
 
             # send data
             response, needs_update = tankful.post('devices/%s/metrics' % config.uid, {
-                'value': current_level,
-                # 'battery': power.level(),
-                'charging': power.is_charging()
+                'value': current_level
             })
 
             # check if firmware needs updating
