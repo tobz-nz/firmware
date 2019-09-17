@@ -3,12 +3,12 @@ from machine import unique_id
 import WIFI
 
 # Level
-last_level_file = '/flash/last_level.py'
+last_level_file = '/flash/LAST_LEVEL.py'
 
 # mm threshold between readings.
 # If the reading is +/- within this threshold from
 # the previous reading, it is ignored
-level_threshhold = 10
+level_threshhold = 20
 
 # LTE
 # lte_apn = 'm2m' # Spark
