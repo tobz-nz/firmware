@@ -1,6 +1,5 @@
 from binascii import hexlify
 from machine import unique_id
-import WIFI
 
 # Level
 last_level_file = '/flash/LAST_LEVEL.py'
@@ -19,10 +18,6 @@ lte_apn = 'hologram' # Hologram
 # lte_band = 28  ## 700MHz (Spark)
 
 lte_band = 3  ## 1800MHz (Hologram/Vodafone)
-
-# WIFI
-wlan_ssid = WIFI.wlan_ssid
-wlan_pass = WIFI.wlan_pass
 
 prefered_network = 'wlan'
 

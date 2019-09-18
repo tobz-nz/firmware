@@ -78,19 +78,22 @@ def connect_lte():
 def connect_wlan():
     """ Connect to WiFi network """
 
-    from network import WLAN
+    try:
+        from network import WLAN
+        import WIFI
+        print('Connecting to WiFi...')
+        connection = WLAN(mode=WLAN.STA, power_save=True)
+        connection.connect(WIFI.wlan_ssid, auth=(WLAN.WPA2, WIFI.wlan_pass), timeout=5000)
 
-    print('Connecting to WiFi...')
-    connection = WLAN(mode=WLAN.STA, power_save=True)
-    connection.connect(config.wlan_ssid, auth=(
-        WLAN.WPA2,
-        config.wlan_pass
-    ))
+        while not connection.isconnected():
+            machine.idle()  # save power while waiting
 
-    while not connection.isconnected():
-        machine.idle()  # save power while waiting
+        print('Connected')
+        return connection, connection.ifconfig()[0]
+    except:
+        print('No WIFI credentials found')
+        pass
 
-    return connection, connection.ifconfig()[0]
 
 
 def at(connection, cmd):
