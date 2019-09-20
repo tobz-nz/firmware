@@ -61,9 +61,6 @@ def get():
     rounded = math.ceil(sum(reading)/len(reading))
     reading = rounded if rounded >= 0 else 0
 
-    # store this reading as the "last_leading"
-    put(reading)
-
     return reading
 
 def put(last_level):

@@ -35,6 +35,9 @@ try:
                 'value': current_level
             })
 
+            # store latest reading as the "last_leading"
+            level.put(current_level)
+
             # check if firmware needs updating
             if (needs_update[0] is True):
                 from OTA import OTA
