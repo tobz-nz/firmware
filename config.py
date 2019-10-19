@@ -23,9 +23,10 @@ prefered_network = 'wlan'
 
 # System
 uid = hexlify(unique_id()).decode()
-sleep_for = 300 * 1000  # time to deep sleep for in milliseconds
+# time to deep sleep for in milliseconds
+sleep_for = 900 * 1000 # 15 minutes
 base_url = 'https://dashboard.tankful.nz/api'
 update_base_url = 'https://updates.tankful.nz'
-ping_limit = 5
+ping_limit = 4 * 12 # about 12 hours
 
 device_model = 'UltraTankv2000'
