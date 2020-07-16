@@ -5,11 +5,8 @@ mtr_enable = Pin('P20', mode=Pin.OUT)
 snsr_enable = Pin('P19', mode=Pin.OUT)
 
 adc = ADC()
-adc.vref(1100)
+adc.vref(config.level_vref)
 sensor = adc.channel(pin='P13', attn=ADC.ATTN_11DB)
-
-# default 60
-kPa = 60
 
 def purge(purge_for = 1):
     """ Purge air from the tube for given number of seconds """
@@ -27,7 +24,8 @@ def get():
     snsr_enable.toggle()
     time.sleep(1)
 
-    zero_offset = 286.00    # Minimum sensor voltage reading (millivolts). In theory should be 330.00 but 286 gives us about 0 so...
+    zero_offset = config.level_zero_offset or 330.00    # Minimum sensor voltage reading (millivolts). In theory should be 330.00 but 286 gives us about 0 so...
+    print('Offset = %s' % zero_offset)
     Vsupply = 3300.00       # Supply voltage to sensor (millivolts)
     pmax = 5.00             # Maximum sensor operating range (psi)
     psi_to_pa = 6894.76     # Conversion factor from psi to Pa
@@ -52,7 +50,7 @@ def get():
         print('{}mm'.format(mm))
 
         # wait a tick for next reading
-        time.sleep(0.02)
+        time.sleep(0.05) # 0.02 takes ~2 seconds to complete loop
 
     # turn the sensor off
     snsr_enable.toggle()

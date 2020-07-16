@@ -8,6 +8,9 @@ last_level_file = '/flash/LAST_LEVEL.py'
 # If the reading is +/- within this threshold from
 # the previous reading, it is ignored
 level_threshhold = 15
+level_vref = 1100
+level_zero_offset = 292
+# 1093 for gpy
 
 # LTE
 # lte_apn = 'm2m' # Spark
@@ -19,7 +22,7 @@ lte_apn = 'hologram' # Hologram
 
 lte_band = 3  ## 1800MHz (Hologram/Vodafone)
 
-prefered_network = 'wlan'
+prefered_network = 'wlan' # lte/wlan
 
 # System
 uid = hexlify(unique_id()).decode()
