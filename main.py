@@ -5,17 +5,21 @@ try:
     # load last reading
     last_level = level.last()
 
-    # Take a new reading (run pump for x seconds first)
-    print('Purging air pipe...')
-    level.purge(1)
-
-    # wait for tube pressure to settle
-    print('Waiting for pressure to stabalize...')
-    time.sleep(2)
-
-    # take reading
     print('Taking reading...')
     current_level = level.get()
+
+    if current_level < last_level:
+        # Take a new reading (run pump for x seconds first)
+        print('Purging air pipe...')
+        level.purge(1)
+
+        # wait for tube pressure to settle
+        print('Wait for pressure to stabalize...')
+        time.sleep(2)
+
+        # take reading
+        print('Taking reading again...')
+        current_level = level.get()
 
     # check if reading needs to be be sent to server
     diff = abs(last_level - current_level)
